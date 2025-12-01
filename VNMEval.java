@@ -41,15 +41,19 @@ public class VNMEval implements VNMVisitor{
   // printing stuff
   public Object visit(ASTPrint node, Object data) throws Exception{
     int children = node.jjtGetNumChildren();
-    for (int i=0; i<children; i++)
-      System.out.print(node.jjtGetChild(i).jjtAccept(this,null));
+    for (int i=0; i<children; i++) {
+      Object res = node.jjtGetChild(i).jjtAccept(this,null);
+      if (res != null) System.out.print(res);
+    }
 		return null;
   }
   // print line
   public Object visit(ASTPrint_ln node, Object data) throws Exception{
     int children = node.jjtGetNumChildren();
-    for (int i=0; i<children; i++)
-      System.out.print(node.jjtGetChild(i).jjtAccept(this,null));
+    for (int i=0; i<children; i++) {
+      Object res = node.jjtGetChild(i).jjtAccept(this,null);
+      if (res != null) System.out.print(res);
+    }
     System.out.println("");
     return null;
   }
@@ -80,13 +84,25 @@ public class VNMEval implements VNMVisitor{
     return defaultVisit(node, data);
   }
   public Object visit(ASTor node, Object data) throws Exception{
-    return defaultVisit(node, data);
+    int children = node.jjtGetNumChildren();
+    for (int i=0; i<children; i++) {
+        Object res = node.jjtGetChild(i).jjtAccept(this, data);
+        if (res instanceof Boolean && (Boolean)res) return true;
+    }
+    return false;
   }
   public Object visit(ASTand node, Object data) throws Exception{
-    return defaultVisit(node, data);
+    int children = node.jjtGetNumChildren();
+    for (int i=0; i<children; i++) {
+        Object res = node.jjtGetChild(i).jjtAccept(this, data);
+        if (res instanceof Boolean && !(Boolean)res) return false;
+    }
+    return true;
   }
   public Object visit(ASTnot node, Object data) throws Exception{
-    return defaultVisit(node, data);
+    Object res = node.jjtGetChild(0).jjtAccept(this, data);
+    if (res instanceof Boolean) return !(Boolean)res;
+    return false;
   }
   // compare numbers
   public Object visit(ASTcomparison node, Object data) throws Exception{
@@ -195,11 +211,19 @@ public class VNMEval implements VNMVisitor{
   }
   // parse int
   public Object visit(ASTnumber node, Object data) throws Exception{
-    return Integer.parseInt((String)node.jjtGetValue());
+    Object val = node.jjtGetValue();
+    if (val instanceof Integer) return val;
+    return Integer.parseInt(val.toString());
   }
   // get string value
   public Object visit(ASTstring node, Object data) throws Exception{
-    return (String)(node.jjtGetValue());
+    Object val = node.jjtGetValue();
+    String s = val.toString();
+    // lazy student fix for quotes
+    if (s.startsWith("\"") && s.endsWith("\"")) {
+        return s.substring(1, s.length()-1);
+    }
+    return s;
   }
 }
 /* JavaCC - OriginalChecksum=22d58c5389ead436110ed9c53d7f4358 (do not edit this line) */

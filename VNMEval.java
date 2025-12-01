@@ -38,12 +38,14 @@ public class VNMEval implements VNMVisitor{
     return defaultVisit(node, data);
   }
   
+  // printing stuff
   public Object visit(ASTPrint node, Object data) throws Exception{
     int children = node.jjtGetNumChildren();
     for (int i=0; i<children; i++)
       System.out.print(node.jjtGetChild(i).jjtAccept(this,null));
 		return null;
   }
+  // print line
   public Object visit(ASTPrint_ln node, Object data) throws Exception{
     int children = node.jjtGetNumChildren();
     for (int i=0; i<children; i++)
@@ -55,6 +57,7 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTAssign node, Object data) throws Exception{
     return defaultVisit(node, data);
   }
+  // if statement logic
   public Object visit(ASTIf node, Object data) throws Exception{
     Boolean condition = (Boolean) node.jjtGetChild(0).jjtAccept(this, data);
     if (condition) {
@@ -85,6 +88,7 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTnot node, Object data) throws Exception{
     return defaultVisit(node, data);
   }
+  // compare numbers
   public Object visit(ASTcomparison node, Object data) throws Exception{
     Object left = node.jjtGetChild(0).jjtAccept(this, data);
     Node comparator = node.jjtGetChild(1);
@@ -126,6 +130,7 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTnotin node, Object data) throws Exception{
     return defaultVisit(node, data);
   }
+  // sum logic
   public Object visit(ASTsum node, Object data) throws Exception{
     int children = node.jjtGetNumChildren();
     int sum = 0;
@@ -134,31 +139,35 @@ public class VNMEval implements VNMVisitor{
         if (res instanceof Integer) {
             sum += (Integer)res;
         } else {
-            throw new Exception("Type mismatch in sum: expected Integer");
+            throw new RuntimeException("Type mismatch in sum: expected Integer");
         }
     }
     return sum;
   }
+  // make negative
   public Object visit(ASTneg node, Object data) throws Exception{
     Object child = node.jjtGetChild(0).jjtAccept(this, data);
     if (child instanceof Integer) {
         return -((Integer)child);
     }
-    throw new Exception("Type mismatch in neg: expected Integer");
+    throw new RuntimeException("Type mismatch in neg: expected Integer");
   }
   public Object visit(ASTpos node, Object data) throws Exception{
     return node.jjtGetChild(0).jjtAccept(this, data);
   }
+  // multiply
   public Object visit(ASTmul node, Object data) throws Exception{
     Object left = node.jjtGetChild(0).jjtAccept(this, data);
     Object right = node.jjtGetChild(1).jjtAccept(this, data);
     return (Integer)left * (Integer)right;
   }
+  // divide
   public Object visit(ASTdiv node, Object data) throws Exception{
     Object left = node.jjtGetChild(0).jjtAccept(this, data);
     Object right = node.jjtGetChild(1).jjtAccept(this, data);
     return (Integer)left / (Integer)right;
   }
+  // modulo
   public Object visit(ASTmod node, Object data) throws Exception{
     Object left = node.jjtGetChild(0).jjtAccept(this, data);
     Object right = node.jjtGetChild(1).jjtAccept(this, data);
@@ -167,9 +176,11 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTvec_const node, Object data) throws Exception{
     return defaultVisit(node, data);
   }
+  // return true
   public Object visit(ASTTRUE node, Object data) throws Exception{
     return true;
   }
+  // return false
   public Object visit(ASTFALSE node, Object data) throws Exception{
     return false;
   }
@@ -182,9 +193,11 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTidbool node, Object data) throws Exception{
     return defaultVisit(node, data);
   }
+  // parse int
   public Object visit(ASTnumber node, Object data) throws Exception{
     return Integer.parseInt((String)node.jjtGetValue());
   }
+  // get string value
   public Object visit(ASTstring node, Object data) throws Exception{
     return (String)(node.jjtGetValue());
   }

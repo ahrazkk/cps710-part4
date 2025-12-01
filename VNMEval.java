@@ -84,25 +84,13 @@ public class VNMEval implements VNMVisitor{
     return defaultVisit(node, data);
   }
   public Object visit(ASTor node, Object data) throws Exception{
-    int children = node.jjtGetNumChildren();
-    for (int i=0; i<children; i++) {
-        Object res = node.jjtGetChild(i).jjtAccept(this, data);
-        if (res instanceof Boolean && (Boolean)res) return true;
-    }
-    return false;
+    return defaultVisit(node, data);
   }
   public Object visit(ASTand node, Object data) throws Exception{
-    int children = node.jjtGetNumChildren();
-    for (int i=0; i<children; i++) {
-        Object res = node.jjtGetChild(i).jjtAccept(this, data);
-        if (res instanceof Boolean && !(Boolean)res) return false;
-    }
-    return true;
+    return defaultVisit(node, data);
   }
   public Object visit(ASTnot node, Object data) throws Exception{
-    Object res = node.jjtGetChild(0).jjtAccept(this, data);
-    if (res instanceof Boolean) return !(Boolean)res;
-    return false;
+    return defaultVisit(node, data);
   }
   // compare numbers
   public Object visit(ASTcomparison node, Object data) throws Exception{
@@ -219,7 +207,7 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTstring node, Object data) throws Exception{
     Object val = node.jjtGetValue();
     String s = val.toString();
-    // lazy student fix for quotes
+   
     if (s.startsWith("\"") && s.endsWith("\"")) {
         return s.substring(1, s.length()-1);
     }

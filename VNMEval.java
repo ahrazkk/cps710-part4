@@ -195,11 +195,19 @@ public class VNMEval implements VNMVisitor{
   }
   // parse int
   public Object visit(ASTnumber node, Object data) throws Exception{
-    return Integer.parseInt((String)node.jjtGetValue());
+    Object val = node.jjtGetValue();
+    if (val instanceof Integer) return val;
+    return Integer.parseInt(val.toString());
   }
   // get string value
   public Object visit(ASTstring node, Object data) throws Exception{
-    return (String)(node.jjtGetValue());
+    Object val = node.jjtGetValue();
+    String s = val.toString();
+    // lazy student fix for quotes
+    if (s.startsWith("\"") && s.endsWith("\"")) {
+        return s.substring(1, s.length()-1);
+    }
+    return s;
   }
 }
 /* JavaCC - OriginalChecksum=22d58c5389ead436110ed9c53d7f4358 (do not edit this line) */

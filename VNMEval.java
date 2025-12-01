@@ -79,14 +79,29 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTWhile node, Object data) throws Exception{
     return defaultVisit(node, data);
   }
+  // or logic
   public Object visit(ASTor node, Object data) throws Exception{
-    return defaultVisit(node, data);
+    int children = node.jjtGetNumChildren();
+    for (int i=0; i<children; i++) {
+        Object res = node.jjtGetChild(i).jjtAccept(this, data);
+        if (res instanceof Boolean && (Boolean)res) return true;
+    }
+    return false;
   }
+  // and logic
   public Object visit(ASTand node, Object data) throws Exception{
-    return defaultVisit(node, data);
+    int children = node.jjtGetNumChildren();
+    for (int i=0; i<children; i++) {
+        Object res = node.jjtGetChild(i).jjtAccept(this, data);
+        if (res instanceof Boolean && !(Boolean)res) return false;
+    }
+    return true;
   }
+  // not logic
   public Object visit(ASTnot node, Object data) throws Exception{
-    return defaultVisit(node, data);
+    Object res = node.jjtGetChild(0).jjtAccept(this, data);
+    if (res instanceof Boolean) return !(Boolean)res;
+    return false;
   }
   // compare numbers
   public Object visit(ASTcomparison node, Object data) throws Exception{

@@ -218,7 +218,7 @@ public class VNMEval implements VNMVisitor{
   public Object visit(ASTstring node, Object data) throws Exception{
     Object val = node.jjtGetValue();
     String s = val.toString();
-    // lazy student fix for quotes
+    // fix for quotes
     if (s.startsWith("\"") && s.endsWith("\"")) {
         return s.substring(1, s.length()-1);
     }
